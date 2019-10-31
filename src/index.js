@@ -26,6 +26,10 @@ io.on('connection', (socket) =>{
     socket.on('disconnect', ()=>{
         io.emit('greeting', 'A user has left')
     })
+
+    socket.on('sendLocation', coords => {
+        io.emit('greeting', `https://google.com/maps?q=${coords.latitude},${coords.longitude}`)
+    })
 })
 
 server.listen(port, ()=>{
