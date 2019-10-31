@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/truongduchuy/ChatApp-Nodejs#readme",
   "dependencies": {
+    "bad-words": "^3.0.0",
     "express": "^4.16.4",
     "socket.io": "^2.2.0"
   },
