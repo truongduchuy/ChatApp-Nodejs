@@ -11,6 +11,17 @@ const $location = document.querySelector('#location')
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
 
+//Options
+const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true})
+
+socket.emit('join', {username, room}, error => {
+    if(error) {
+        alert(error)
+        location.href= "/"
+    }
+
+})
+
 socket.on('greeting', message =>{
     const html = Mustache.render(messageTemplate, {
         message: message.text,
@@ -34,7 +45,7 @@ $messageForm.addEventListener('submit', e => {
     // const message = document.querySelector('input').value
     const message = e.target.elements.message.value
     
-    socket.emit('sendMessage', message, (error) => {
+    socket.emit('sendMessage', {message, room}, (error) => {
         $messageFormButton.removeAttribute('disabled')
         $messageFormInput.value = ''
         $messageFormInput.focus()
