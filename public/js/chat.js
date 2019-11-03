@@ -26,8 +26,31 @@ socket.emit('join', {username, room}, error => {
 
 socket.on('roomData', ({room, users}) => {
     const html = Mustache.render(usersListTemplate, {room, users})
-    $sidebar.insertAdjacentHTML('beforeend', html)
+    $sidebar.innerHTML =  html
 })
+
+const autoscroll = () => {
+    //New message element
+    const $newMessage = $messages.lastElementChild
+
+    //Height of the new message
+    const newMessageStyles = getComputedStyle($newMessage) 
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom) 
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
+
+    //Visible Height 
+    const visibleHeight = $messages.offsetHeight
+
+    //Height of messages content
+    const containerHeight = $messages.scrollHeight
+
+    //How far have i scrolled 
+    const scrollOffset = $messages.scrollTop + visibleHeight
+
+    if(containerHeight - newMessageHeight <= scrollOffset){
+        $messages.scrollTop = containerHeight
+    }
+}
 
 socket.on('greeting', message =>{
     const html = Mustache.render(messageTemplate, {
@@ -36,6 +59,7 @@ socket.on('greeting', message =>{
         createdAt: moment(message.createdAt).format('h:mm a')
     })
     $messages.insertAdjacentHTML('beforeend', html)
+    autoscroll()
 })
 
 socket.on('locationMessage', data => {
@@ -45,6 +69,7 @@ socket.on('locationMessage', data => {
         createdAt: moment(data.createdAt).format('h:mm a')
     })
     $messages.insertAdjacentHTML('beforeend', html)
+    autoscroll()
 })
 
 $messageForm.addEventListener('submit', e => {
